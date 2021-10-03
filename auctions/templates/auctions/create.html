@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+
+
+{% block title %}
+Create
+{% endblock %}
+
+{% block body %}
+   
+    {% if message %}
+    {{message}}
+    {% endif %}
+
+
+<h2>Create your Listing here:</h2>
+
+<form action="{% url 'index' %}" method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{form}}
+
+    <input type="Submit" value="Create">
+
+</form>
+
+{% endblock %}
