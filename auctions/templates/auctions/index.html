@@ -8,10 +8,11 @@
         <p>{{message}}</p>    
     </div>
     {% endif %}
-
+    
     <h2>Active Listings</h2>
     <hr>
     {% for listing in listings %}
+<div class="listing" onclick="location.href='{% url 'listing' listing.id %}' ">
     <h3>{{listing.Title|title}}</h3>
     <hr>
     <img src="{{listing.Url}}" alt="{{listing.Title}}">
@@ -21,6 +22,8 @@
     <h4>Amount:${{listing.starting_bid}}</h4>
     <br>
     <p>Listed By: <strong>{{listing.author}}</strong> at {{listing.date_time}}</p>
+    <hr>
+</div>
     {% empty %}
     <p class="empty"> No Listings Availiable right Now, want to add one? <a href="{% url 'create' %}">Create listing</a></p>
     {% endfor %}

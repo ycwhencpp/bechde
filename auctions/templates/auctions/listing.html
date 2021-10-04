@@ -1,0 +1,43 @@
+{% extends "auctions/layout.html" %}
+
+
+
+{% block title %}
+listing
+{% endblock %}
+
+{% block body %}
+
+<h2>Listing: {{listing.Title|title}}</h2>
+<br>
+<img src="{{listing.Url}}" alt="{{listing.Title}}">
+<br>
+<p>{{listing.Description}}</p>
+<br>
+<h2>${{listing.starting_bid}}</h2>
+<br>
+<p>{{count}} bid(s) so far.{{message}}.</p>
+
+<form action="",method="POST">
+    {{bid_form}}
+    <input type="submit" value="Submit bid">
+</form>
+
+<h3>Details:</h3>
+<ul>
+    <li>Listed by:{{listing.author}}</li>
+    <li>Category:{{listing.tag}}</li>
+</ul>
+
+<h2>Comments:-</h2>
+<form action="",method="POST">
+    {{comment_form}}
+    <input type="submit" value="Post Comment">
+</form>
+
+{% for c in comments %}
+    {{c}}
+    {% empty %}
+    <p>No comments Yet.</p>
+{% endfor %}
+{% endblock %}

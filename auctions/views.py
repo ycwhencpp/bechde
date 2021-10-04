@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, auction_listing
+from .models import User, auction_listing,comments,bids
 from .forms import listing_form,bid_form,comment_form
 # from django.contrib import messages
 
@@ -138,4 +138,16 @@ def register(request):
 def create_listing(request):
     return render(request,"auctions/create.html",{
         "form":listing_form(),
+    })
+
+def view_listing(request,id):
+
+    return render(request,"auctions/listing.html",{
+        "listing":auction_listing.objects.get(pk=id),
+        "bid_form":bid_form,
+        "comment_form":comment_form,
+        "comments":comments.objects.all(),
+        "count":bids.objects.all().count(),
+
+
     })

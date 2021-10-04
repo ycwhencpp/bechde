@@ -62,5 +62,5 @@ class bid_form(forms.ModelForm):
         }
 
         labels={
-            "amount":"Enter Your Bid amount"
+            "amount":""
         }
