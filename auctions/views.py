@@ -1,85 +1,23 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.db.utils import Error
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import  HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .models import User, auction_listing,comments,bids
 from .forms import listing_form,bid_form,comment_form
-# from django.contrib import messages
 
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
-
-# def index(request):
-#     if request.method=="POST":
-#         form=create_form(request.POST)
-#         if form.is_valid():
-#             print("test1")
-#             title=form.cleaned_data["title"]
-#             description=form.cleaned_data["description"]
-#             url=form.cleaned_data["url"]
-#             tag=form.cleaned_data["tag"]
-#             amount=form.cleaned_data["amount"]
-#             try:
-#                 print("test2")
-#                 print(datetime.now())
-#                 u=User.objects.get(pk=request.user.id)
-                
-#                 print("test9")
-#                 listing=auction_listing(Title=title,Description=description,Url=url,Tag=tag,date_time=datetime.now())
-#                 print("test10")
-#                 listing.User.add(u)
-#                 print("test11")
-#                 listing.save()
-                
-#                 # u.auction.add(listing)
-#                 print(listing)
-#                 print(datetime.now())
-#                 # listing.save()
-#                 return HttpResponseRedirect(reverse('index'))
-#             except:
-#                 print("test3")
-                
-#                 return render(request,"auctions/create.html",{
-#                     "message":"An error occured try again",
-#                     "form":create_form()
-#                 })
-#             print("test4")
-#             return HttpResponseRedirect(reverse("index"))
-
-#         print("test5")
-#         return render(request,"auctions/create.html",{
-#                     "message":"Check your inputs and try again",
-#                     "form":create_form()
-#                 })
-#     print("test6")    
-#     return render(request, "auctions/index.html",{
-#         "listings":auction_listing.objects.all()
-#     })
 
 
 
 
 def index (request):
-    if request.method == "POST":
-        form=listing_form(request.POST)
-        if form.is_valid():
-            form.instance.author = request.user
-            form.save()
-            return render(request,"auctions/create.html",{
-                "message":"Your Listing has been Succesfully Created.",
-                "form":listing_form()
-            })
-            # messages.success(request, ('Your movie was successfully added!'))
-        else:
-            return render(request,"auctions/create.html",{
-                "message":"OOPS!!,There was an error while saving your form ,try again.",
-                "form":listing_form()
-            })
 
     return render(request,"auctions/index.html",{
-        "listings":auction_listing.objects.all()
+        "listings":auction_listing.objects.filter(active=True).all()
     })
             
 
@@ -134,20 +72,160 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-
+@login_required(login_url="/login")
 def create_listing(request):
+    if request.method == "POST":
+        form=listing_form(request.POST)
+        if form.is_valid():
+            form.instance.author = request.user
+            form.save()
+            messages.success(request,"Listing succesfully created.")
+            return redirect("/")
+
+        else:
+            messages.error(request,"Oops!! an error occured while saving ,Try again.")
+            return HttpResponseRedirect(reverse('create'))
+
     return render(request,"auctions/create.html",{
         "form":listing_form(),
     })
 
+
+
 def view_listing(request,id):
+    if auction_listing.objects.get(pk=id).active==False:
+        messages.info(request,"auction has been closed")
 
     return render(request,"auctions/listing.html",{
         "listing":auction_listing.objects.get(pk=id),
         "bid_form":bid_form,
+        "max_bid":auction_listing.objects.get(pk=id).current_bid,
         "comment_form":comment_form,
-        "comments":comments.objects.all(),
-        "count":bids.objects.all().count(),
+        "comments":comments.objects.filter(listing=id).all(),
+        "count":bids.objects.filter(listing=id).all().count(),
+        
+    })
+
+@login_required(login_url="/login")
+def place_bid(request,id):
+
+    if request.method=="POST":
+        bidform=bid_form(request.POST)
+        a=auction_listing.objects.get(pk=id)
+        if bidform.is_valid():
+                    
+            bidform.instance.user=request.user
+            bidform.instance.listing=a
+            current_bid=bidform.cleaned_data["amount"]
+            if int(current_bid) > auction_listing.objects.get(pk=id).current_bid:
+                bidform.save()
+                messages.success(request, 'Bid successfully added.')
+                return HttpResponseRedirect(reverse('listing',args=[id]))
+            else:
+                messages.info(request, 'Place Bid higher then Current bid.')
+
+        else:
+            messages.error(request, 'We are not able to add your bid please try again.')
+            return HttpResponseRedirect(reverse('listing',args=[id]))
+                
+    return HttpResponseRedirect(reverse('listing',args=[id]))
+        
+
+@login_required(login_url='/login')
+def close_bid(request,id):
+    if request.method=="POST" and request.user == auction_listing.objects.get(pk=id).author :
+
+        listing=auction_listing.objects.get(pk=id)
+        # bid=bids.objects.filter(listing=listing).all()
+        # max=bid.aggregate(Max('amount'))['amount__max']
+        max=listing.current_bid
+        user=bids.objects.get(amount=max).user
+        listing.active=False
+        listing.save()
+        messages.success(request, 'Auction Succesfully Closed.')
+            
+        return render(request,"auctions/listing.html",{
+        "bid_winner":user,
+        "listing":auction_listing.objects.get(pk=id),
+        "bid_form":bid_form,
+        "max_bid":auction_listing.objects.get(pk=id).current_bid,
+        "comment_form":comment_form,
+        "comments":comments.objects.filter(listing=id).all(),
+        "count":bids.objects.filter(listing=id).all().count(),
+        })
+    
+    return HttpResponseRedirect(reverse('listing',args=[id]))
 
 
+
+@login_required(login_url="/login")
+def place_comment(request,id):
+    if request.method=="POST":
+        commentform=comment_form(request.POST)
+        if commentform.is_valid():
+            commentform.instance.author=request.user
+            commentform.instance.listing=auction_listing.objects.get(pk=id)
+            commentform.save()
+            messages.success(request, 'comment sucessfully added.')
+            return HttpResponseRedirect(reverse('listing',args=[id]))
+        else:
+            messages.error(request, 'We are not able to add your comment please try again.')
+            return HttpResponseRedirect(reverse('login'))
+    return HttpResponseRedirect(reverse('listing',args=[id]))
+
+
+
+
+@login_required(login_url="/login") 
+def update_watchlist(request,id):
+    if request.method=="POST":
+        user=request.user
+        listing=auction_listing.objects.get(pk=id)
+        if listing in  auction_listing.objects.filter(is_watched=request.user).all():
+            listing.is_watched.remove(user)
+            messages.info(request, 'removed from watchlist')
+        else:
+            listing.is_watched.add(user)
+            messages.info(request, 'added to watchlist')
+    return HttpResponseRedirect(reverse('listing',args=[id]))
+    
+
+@login_required(login_url='/login')
+def remove_watchlist(request,id):
+    if request.method=="POST":
+
+        listing=auction_listing.objects.get(pk=id)
+
+        user=request.user
+
+        # user.watchlist.remove(listing)
+        listing.is_watched.remove(user)
+
+        messages.success(request,"Removed from Watchlist.")
+    return HttpResponseRedirect(reverse('watchlist'))
+
+
+@login_required(login_url="/login") 
+def watchlist(request):
+    return render(request,'auctions/watchlist.html',{
+        "watchlist":auction_listing.objects.filter(is_watched=request.user).all()
+    })
+
+def categories(request):
+
+    return render(request,"auctions/categories.html",{
+        "categories":set(auction_listing.objects.values_list("Tag",flat=True))
+    })
+
+def view_category(request,category):
+    listing=auction_listing.objects.filter(Tag=category).all()
+    categories=set(auction_listing.objects.values_list("Tag",flat=True))
+
+    if category not in categories:
+        messages.error(request,f"No listing found in the category of {category}.")
+        return HttpResponseRedirect(reverse('categories'))
+
+    return render(request,"auctions/view_category.html",{
+        "listing":listing,
+        "tag":category
     })

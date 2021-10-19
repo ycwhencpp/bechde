@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if messages %}
+    {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
+                <p class="text-center">
+                <strong>{{ message }}</strong>
+                </p>
+            </div>
+    {% endfor %}
+{% endif %}
+    <h2>categories</h2>
+    <hr>
+    <div class="layout">
+        {% for c in categories %}
+            
+            <div class="categories">
+                <a href="{% url 'view_category' c %}">
+            <h2>{{c}}</h2>
+            <br>
+            {% empty %}
+            <p>No categories availiable.</p>
+            {% endfor %}
+        </a>
+    </div>
+
+</div>
+{% endblock %}

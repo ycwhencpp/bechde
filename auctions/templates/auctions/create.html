@@ -8,18 +8,42 @@ Create
 
 {% block body %}
    
-    {% if message %}
-    {{message}}
-    {% endif %}
+{% if messages %}
+    {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
+                <p class="text-center">
+                <strong>{{ message }}</strong>
+                </p>
+            </div>
+    {% endfor %}
+{% endif %}
+
 
 
 <h2>Create your Listing here:</h2>
 
-<form action="{% url 'index' %}" method="POST" enctype="multipart/form-data">
+<form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">
 
     {% csrf_token %}
 
-    {{form}}
+    {% for field in form %}
+                        
+    
+          {% if field.name != 'starting_bid' %}
+            {{field.label_tag}} {{field}}
+          
+          {% else %}
+            {{ field.label_tag }}
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">RS</span>
+              </div>
+              {{ field }}
+            </div>
+        {% endif %}
+    
+    
+{% endfor %}
 
     <input type="Submit" value="Create">
 

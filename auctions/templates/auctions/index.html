@@ -3,30 +3,121 @@
 {% block body %}
 
 
-    {% if message %}
-    <div class="message">
-        <p>{{message}}</p>    
-    </div>
-    {% endif %}
+{% if messages %}
+    {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
+                <p class="text-center">
+                <strong>{{ message }}</strong>
+                </p>
+            </div>
+    {% endfor %}
+{% endif %}
+
     
     <h2>Active Listings</h2>
     <hr>
+<div class="flex">
     {% for listing in listings %}
-<div class="listing" onclick="location.href='{% url 'listing' listing.id %}' ">
-    <h3>{{listing.Title|title}}</h3>
-    <hr>
-    <img src="{{listing.Url}}" alt="{{listing.Title}}">
-    <hr>
-    <p>{{listing.Description}}</p>
-    <hr>
-    <h4>Amount:${{listing.starting_bid}}</h4>
-    <br>
-    <p>Listed By: <strong>{{listing.author}}</strong> at {{listing.date_time}}</p>
-    <hr>
-</div>
+    <div class="card" style="width: 25em; height:auto; ">
+        <img src="{{listing.Url}}"  class="card-img-top" alt="{{listing.Title}}">
+        <div class="card-body">
+          <h3 class="card-title">{{listing.Title|title}}</h3>
+          <p class="card-text">{{listing.Description}}.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Amount:${{listing.starting_bid}}</li>
+          <li class="list-group-item">A second item</li>
+          <li class="list-group-item">A third item</li>
+        </ul>
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a>
+        </div>
+      </div>
     {% empty %}
     <p class="empty"> No Listings Availiable right Now, want to add one? <a href="{% url 'create' %}">Create listing</a></p>
     {% endfor %}
-
+</div>
 
 {% endblock %}
+
+
+
+
+
+  <div class="layout">
+    {% for listing in listings %}
+    <div class=" listing" onclick="location.href='{% url 'listing' listing.id %}' ">
+        <div class="column">
+                <div class=".row-5">
+                    <h3>{{listing.Title|title}}</h3>
+                </div>
+                <br>
+                <div class="row-4">
+                    <img src="{{listing.Url}}" alt="{{listing.Title}}">
+                </div>
+                <div class="row-6">
+                    <p>{{listing.Description}}</p>
+                     <h4>Amount:${{listing.starting_bid}}</h4>
+                     <p>Listed By: <strong>{{listing.author}}</strong> at {{listing.date_time}}</p>
+                </div>
+        </div>
+
+    </div>
+    {% empty %}
+    <p class="empty"> No Listings Availiable right Now, want to add one? <a href="{% url 'create' %}">Create listing</a></p>
+    {% endfor %}
+</div>
+
+
+
+
+
+<div class="row row-cols-1 row-cols-md-3 g-3" >
+    {% for listing in listings %}
+        <div class="col" onclick="location.href='{% url 'listing' listing.id %}' ">
+          <div class="card ">
+            <img src="{{listing.Url}}"  class="card-img-top" alt="{{listing.Title}}">
+            <div class="card-body">
+              <h5 class="card-title">{{listing.Title|title}}</h5>
+              <p class="card-text">{{listing.Description}}</p>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+      <p class="empty"> No Listings Availiable right Now, want to add one? <a href="{% url 'create' %}">Create listing</a></p>
+      {% endfor %}
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+      {% for listing in listings %}
+      <div class="card mb-3 " style="max-width: 540px;">
+          
+          <div class="row g-6 ">
+          
+            <div class="col-md-4">
+              <img src="{{listing.Url}}"  class="img-fluid rounded-start"  alt="{{listing.Title}}">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">{{listing.Title|title}}</h5>
+                <p class="card-text">{{listing.Description}}</p>
+                <p class="card-text"><small class="text-muted">Listed By: <strong>{{listing.author}}</strong> at {{listing.date_time}}</small></p>
+              </div>
+            </div>
+          
+         
+          </div>
+        </div>
+        {% empty %}
+        <p class="empty"> No Listings Availiable right Now, want to add one? <a href="{% url 'create' %}">Create listing</a></p>
+        {% endfor %}

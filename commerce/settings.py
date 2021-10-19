@@ -125,3 +125,5 @@ STATIC_URL = '/static/'
 
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

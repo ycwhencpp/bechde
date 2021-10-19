@@ -1,5 +1,7 @@
+
 from django import forms
 from .models import auction_listing,bids,comments
+
 
 # class create_form(forms.Form):
 #     title=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control title","placeholder":"Enter the title","autocomplete":"off"}))
@@ -13,15 +15,31 @@ from .models import auction_listing,bids,comments
 
 class listing_form(forms.ModelForm):
 
+    choice=[
+        ("Art","Art"),
+        ("Books","Books"),
+        ("Clothing","Clothing"),
+        ("Electronics","Electronics"),
+        ("Health and Beauty","Health and Beauty"),
+        ("Homeware","Homeware"),
+        ("Music","Music"),
+        ("Other","Other"),
+        ("Shoe and Trainer","Shoe and Trainer"),
+    
+    ]
+    Tag=forms.ChoiceField(choices=choice,initial="Other")
+
+    Tag.widget.attrs.update({"class":"form-control title"})
+    
     class Meta:
         model=auction_listing
         fields=["Title","Description","Url","Tag","starting_bid"]
+         
 
         widgets = {
             "Title":forms.TextInput(attrs={"class":"form-control title","placeholder":"Enter the title","autocomplete":"off"}),
             "Description":forms.Textarea(attrs={"class":"form-control content","placeholder":"Item Description","autocomplete":"off","maxlength":1000}),
             "Url":forms.URLInput(attrs={"class":"form-control title","placeholder":"Image URL","autocomplete":"off"}),
-            "Tag":forms.TextInput(attrs={"class":"form-control title","placeholder":"Cateogry","autocomplete":"on"}),
             "starting_bid":forms.NumberInput(attrs={"class":"form-control title","placeholder":"Bid amount","autocomplete":"off"})
         }
 
@@ -30,7 +48,11 @@ class listing_form(forms.ModelForm):
             "Tag":"Category",
             "starting_bid":"Amount",
         }
+        
+       
 
+
+        
 
 class comment_form(forms.ModelForm):
 
@@ -64,3 +86,6 @@ class bid_form(forms.ModelForm):
         labels={
             "amount":""
         }
+
+
+

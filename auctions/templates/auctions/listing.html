@@ -7,18 +7,37 @@ listing
 {% endblock %}
 
 {% block body %}
-
+{% if messages %}
+    {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
+                <p class="text-center">
+                <strong>{{ message }}</strong>
+                </p>
+            </div>
+    {% endfor %}
+{% endif %}
 <h2>Listing: {{listing.Title|title}}</h2>
 <br>
 <img src="{{listing.Url}}" alt="{{listing.Title}}">
 <br>
 <p>{{listing.Description}}</p>
 <br>
-<h2>${{listing.starting_bid}}</h2>
+<h2>Current bid:${{max_bid}}</h2>
+<hr>
+<h3>Starting bid:${{listing.starting_bid}}</h2>
 <br>
-<p>{{count}} bid(s) so far.{{message}}.</p>
-
-<form action="",method="POST">
+<p>{{count}} bid(s) so far.{% if messages.success %} Your Bid is the current bid. {% endif %}</p>
+<hr>
+<form action="{% url 'update_watchlist' listing.id %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Add to watchlist">
+</form>
+<form action="{% url 'close_bid' listing.id %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Close Bid">
+</form>
+<form action="{% url 'bid' listing.id %}" method="POST">
+    {% csrf_token %}
     {{bid_form}}
     <input type="submit" value="Submit bid">
 </form>
@@ -26,18 +45,20 @@ listing
 <h3>Details:</h3>
 <ul>
     <li>Listed by:{{listing.author}}</li>
-    <li>Category:{{listing.tag}}</li>
+    <li>Category:{{listing.Tag| default:"No Category Listed"|title}}</li>
 </ul>
 
 <h2>Comments:-</h2>
-<form action="",method="POST">
+<form action="{% url 'comment' listing.id %}" method="POST">
+    {% csrf_token %}
     {{comment_form}}
     <input type="submit" value="Post Comment">
 </form>
-
+<ul>
 {% for c in comments %}
-    {{c}}
+   <li>{{c}}</li> 
     {% empty %}
     <p>No comments Yet.</p>
 {% endfor %}
+</ul>
 {% endblock %}

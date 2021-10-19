@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Listing on {{tag}}</h2>
+    <br>
+    {% for c in listing %}
+    <div class="listing" >
+        <h3>{{c.Title|title}}</h3>
+        <hr>
+        <img src="{{c.Url}}" alt="{{c.Title}}">
+        <hr>
+        <p>{{c.Description}}</p>
+        <hr>
+        <h4>Amount:${{c.starting_bid}}</h4>
+        <br>
+        <p>Listed By: <strong>{{c.author}}</strong> at {{c.date_time}}</p>
+        <hr>
+    </div>
+        {% empty %}
+        <p class="empty">No listing aviliable on this category search for differnt one ! <a href="{% url 'category' %}">Category page</a></p>
+        {% endfor %}
+
+{% endblock %}

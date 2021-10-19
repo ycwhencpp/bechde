@@ -1,0 +1,35 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if messages %}
+    {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
+                <p class="text-center">
+                <strong>{{ message }}</strong>
+                </p>
+            </div>
+    {% endfor %}
+{% endif %}
+    <h2>Watchlist</h2>
+    <hr>
+    <div class="watchlist">
+        {% for w in watchlist %}
+        <a href="{% url 'listing' w.id %}">
+            <h2>{{w.Title}}</h2>
+            <br>
+            <form action="{% url 'remove_watchlist' w.id %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="remove">
+            </form>
+            <br>
+            <img src="{{w.Url}}" alt="{{w.Title}}">
+            <br>
+            <h3>Starting bid:${{w.starting_bid}}</h2>
+                <br>
+            {% empty %}
+            <p>Nothing in watchlist Yet.Try adding some <a href="{% url 'index' %}">View Listing</a></p>
+        </a>
+            {% endfor %}
+    </div>
+
+{% endblock %}
