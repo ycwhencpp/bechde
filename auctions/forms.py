@@ -29,7 +29,7 @@ class listing_form(forms.ModelForm):
     ]
     Tag=forms.ChoiceField(choices=choice,initial="Other")
 
-    Tag.widget.attrs.update({"class":"form-control title"})
+    Tag.widget.attrs.update({"class":"form-select"})
     
     class Meta:
         model=auction_listing
@@ -38,13 +38,13 @@ class listing_form(forms.ModelForm):
 
         widgets = {
             "Title":forms.TextInput(attrs={"class":"form-control title","placeholder":"Enter the title","autocomplete":"off"}),
-            "Description":forms.Textarea(attrs={"class":"form-control content","placeholder":"Item Description","autocomplete":"off","maxlength":1000}),
+            "Description":forms.Textarea(attrs={"class":"form-control content","placeholder":"Item Description","autocomplete":"off","maxlength":1000,"rows":7}),
             "Url":forms.URLInput(attrs={"class":"form-control title","placeholder":"Image URL","autocomplete":"off"}),
             "starting_bid":forms.NumberInput(attrs={"class":"form-control title","placeholder":"Bid amount","autocomplete":"off"})
         }
 
         labels={
-            "Url":"Image Url",
+            "Url":"Image URL",
             "Tag":"Category",
             "starting_bid":"Amount",
         }
@@ -80,7 +80,7 @@ class bid_form(forms.ModelForm):
         fields=["amount"]
 
         widgets={
-            "amount":forms.NumberInput(attrs={"class":"form-control title","placeholder":"Bid amount","autocomplete":"off"})
+            "amount":forms.NumberInput(attrs={"class":"form-control title","placeholder":"Bid amount","autocomplete":"off","min":0})
         }
 
         labels={

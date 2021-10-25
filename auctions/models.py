@@ -36,7 +36,8 @@ class auction_listing(models.Model):
         else:
             return self.starting_bid
 
-
+    def is_in_watchlist(self,user):
+        return user.watchlist.filter(pk=self.pk)
 
 class  bids(models.Model):
     date_time=models.DateTimeField(auto_now_add = True)

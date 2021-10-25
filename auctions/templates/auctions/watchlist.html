@@ -1,6 +1,9 @@
 {% extends "auctions/layout.html" %}
 
+{% block title %}Watchlist {% endblock %}
+
 {% block body %}
+
 {% if messages %}
     {% for message in messages %}
             <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
@@ -10,26 +13,45 @@
             </div>
     {% endfor %}
 {% endif %}
-    <h2>Watchlist</h2>
-    <hr>
-    <div class="watchlist">
-        {% for w in watchlist %}
-        <a href="{% url 'listing' w.id %}">
-            <h2>{{w.Title}}</h2>
-            <br>
-            <form action="{% url 'remove_watchlist' w.id %}" method="POST">
-                {% csrf_token %}
-                <input type="submit" value="remove">
-            </form>
-            <br>
-            <img src="{{w.Url}}" alt="{{w.Title}}">
-            <br>
-            <h3>Starting bid:${{w.starting_bid}}</h2>
-                <br>
-            {% empty %}
-            <p>Nothing in watchlist Yet.Try adding some <a href="{% url 'index' %}">View Listing</a></p>
-        </a>
-            {% endfor %}
-    </div>
+    <h2 class="heading">Watchlist</h2>
+
+    <br>
+
+<div class="flex">
+    {% for listing in watchlist %}
+        <div class="card" style="border-radius: 10px;" onclick="location.href='{% url 'listing' listing.id %}' ">
+            {% if listing.active == False %}
+                <img src="{{listing.Url}}"  class="card-img-top card-img closed " style="border-radius: 20px;" alt="{{listing.Title}}">
+            {% else %}
+                <img src="{{listing.Url}}"  class="card-img-top card-img " style="border-radius: 20px;" alt="{{listing.Title}}">
+            {% endif %}
+            
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="card-title">{{listing.Title|title}}</h3>
+                            <p class="card-text">Amount: <strong>${{listing.starting_bid}} </strong></p>
+                        </div>
+                    <form action="{% url 'remove_watchlist' listing.id %}" method="POST" >
+                        {% csrf_token %}
+                        <button class=" round-button"><i class='bx bxs-heart watchlist-icon-fill'></i> </button>
+                    </form>
+                    </div>
+                </div>
+                
+                
+            <ul class="list-group list-group-flush"> 
+                <li class="list-group-item" >{{listing.Description}}.</li>
+            
+            </ul>
+            <div class="card-body" style="border-top:1px solid dashed;" >
+                <p style="border: 0;">Posted on {{listing.date_time|date}}</p>
+            </div>
+        </div>
+    {% empty %}
+    <p class="empty"> Nothing in watchlist Yet.Try adding some <a href="{% url 'index' %}">View Listing</a></p>
+    {% endfor %}
+</div>
+
 
 {% endblock %}

@@ -1,24 +1,34 @@
 {% extends "auctions/layout.html" %}
 
+{% block title %}{{category|title}}{% endblock %}
+
 {% block body %}
 
-    <h2>Listing on {{tag}}</h2>
+    <h2 class="heading">Listing on: {{tag|title}}</h2>
     <br>
-    {% for c in listing %}
-    <div class="listing" >
-        <h3>{{c.Title|title}}</h3>
-        <hr>
-        <img src="{{c.Url}}" alt="{{c.Title}}">
-        <hr>
-        <p>{{c.Description}}</p>
-        <hr>
-        <h4>Amount:${{c.starting_bid}}</h4>
-        <br>
-        <p>Listed By: <strong>{{c.author}}</strong> at {{c.date_time}}</p>
-        <hr>
-    </div>
+    <div class="flex">  
+        
+        {% for c in listing %}
+        
+        <div class="card" style="border-radius: 10px;" onclick="location.href='{% url 'listing' c.id %}' ">
+            <img src="{{c.Url}}"  class="card-img-top card-img " style="border-radius: 20px;" alt="{{c.Title}}">
+            <div class="card-body">
+            <h3 class="card-title">{{c.Title|title}}</h3>
+            <p class="card-text">Amount: <strong>${{c.starting_bid}} </strong></p>
+            </div>
+            <ul class="list-group list-group-flush"> 
+            <li class="list-group-item" >{{c.Description}}.</li>
+            
+            </ul>
+            <div class="card-body" style="border-top:1px solid dashed;" >
+            <p style="border: 0;">Posted on {{c.date_time|date}}</p>
+            </div>
+        </div>
+       
         {% empty %}
-        <p class="empty">No listing aviliable on this category search for differnt one ! <a href="{% url 'category' %}">Category page</a></p>
+        <p class="empty"> No Listings Availiable in this category, want to add one? <a href="{% url 'create' %}">Create listing</a></p>
         {% endfor %}
+    </div>
+
 
 {% endblock %}

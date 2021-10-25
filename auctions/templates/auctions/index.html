@@ -1,5 +1,7 @@
 {% extends "auctions/layout.html" %}
 
+{% block title %}Listings {% endblock %}
+
 {% block body %}
 
 
@@ -14,24 +16,22 @@
 {% endif %}
 
     
-    <h2>Active Listings</h2>
-    <hr>
+    <h2 class="heading">Active Listings</h2>
+<br>
 <div class="flex">
     {% for listing in listings %}
-    <div class="card" style="width: 25em; height:auto; ">
-        <img src="{{listing.Url}}"  class="card-img-top" alt="{{listing.Title}}">
+    <div class="card" style="border-radius: 10px;" onclick="location.href='{% url 'listing' listing.id %}' ">
+        <img src="{{listing.Url}}"  class="card-img-top card-img " style="border-radius: 20px;" alt="{{listing.Title}}">
         <div class="card-body">
           <h3 class="card-title">{{listing.Title|title}}</h3>
-          <p class="card-text">{{listing.Description}}.</p>
+          <p class="card-text">Amount: <strong>${{listing.starting_bid}} </strong></p>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">Amount:${{listing.starting_bid}}</li>
-          <li class="list-group-item">A second item</li>
-          <li class="list-group-item">A third item</li>
+        <ul class="list-group list-group-flush"> 
+          <li class="list-group-item" >{{listing.Description}}.</li>
+          
         </ul>
-        <div class="card-body">
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
+        <div class="card-body" style="border-top:1px solid dashed;" >
+          <p style="border: 0;">Posted on {{listing.date_time|date}}</p>
         </div>
       </div>
     {% empty %}

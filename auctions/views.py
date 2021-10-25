@@ -93,16 +93,31 @@ def create_listing(request):
 
 
 def view_listing(request,id):
+    listing=auction_listing.objects.get(pk=id)
+
+    if request.user.is_authenticated:
+        is_in_watchlist=listing.is_in_watchlist(request.user)
+    else:
+        is_in_watchlist=False
+    
     if auction_listing.objects.get(pk=id).active==False:
         messages.info(request,"auction has been closed")
 
+    if listing.bid.count()>0:
+        current_winner=listing.bid.get(amount=listing.current_bid).user
+        
+    else:
+        current_winner=False
     return render(request,"auctions/listing.html",{
-        "listing":auction_listing.objects.get(pk=id),
+        "listing":listing,
         "bid_form":bid_form,
-        "max_bid":auction_listing.objects.get(pk=id).current_bid,
+        "max_bid":listing.current_bid,
         "comment_form":comment_form,
         "comments":comments.objects.filter(listing=id).all(),
+        "comment_count":comments.objects.filter(listing=id).all().count(),
         "count":bids.objects.filter(listing=id).all().count(),
+        "is_in_watchlist":is_in_watchlist,
+        "current_winner":current_winner,
         
     })
 
@@ -120,6 +135,7 @@ def place_bid(request,id):
             if int(current_bid) > auction_listing.objects.get(pk=id).current_bid:
                 bidform.save()
                 messages.success(request, 'Bid successfully added.')
+
                 return HttpResponseRedirect(reverse('listing',args=[id]))
             else:
                 messages.info(request, 'Place Bid higher then Current bid.')
@@ -139,19 +155,35 @@ def close_bid(request,id):
         # bid=bids.objects.filter(listing=listing).all()
         # max=bid.aggregate(Max('amount'))['amount__max']
         max=listing.current_bid
-        user=bids.objects.get(amount=max).user
+        print(max)
+        print(listing.author)
+        # if listing.bid.all() ==0:
+        #     print(listing.bid.all())
+        #     user=request.user
+        # user=bids.objects.get(amount=max).user
+
+        # print(t)
+        # print(t.listing)
+        # print(t.user)
+        # print(x)
+        if listing.bid.count()>0:
+            current_winner=listing.bid.get(amount=listing.current_bid).user
+        else:
+            current_winner=False
         listing.active=False
         listing.save()
         messages.success(request, 'Auction Succesfully Closed.')
             
         return render(request,"auctions/listing.html",{
-        "bid_winner":user,
+        # "bid_winner":user,
         "listing":auction_listing.objects.get(pk=id),
         "bid_form":bid_form,
         "max_bid":auction_listing.objects.get(pk=id).current_bid,
         "comment_form":comment_form,
         "comments":comments.objects.filter(listing=id).all(),
         "count":bids.objects.filter(listing=id).all().count(),
+        "comment_count":comments.objects.filter(listing=id).all().count(),
+        "current_winner":current_winner,
         })
     
     return HttpResponseRedirect(reverse('listing',args=[id]))
@@ -181,7 +213,7 @@ def update_watchlist(request,id):
     if request.method=="POST":
         user=request.user
         listing=auction_listing.objects.get(pk=id)
-        if listing in  auction_listing.objects.filter(is_watched=request.user).all():
+        if listing in  auction_listing.objects.filter(is_watched=request.user).all(): # or listing.is_in_watchlist(user)
             listing.is_watched.remove(user)
             messages.info(request, 'removed from watchlist')
         else:
@@ -226,6 +258,6 @@ def view_category(request,category):
         return HttpResponseRedirect(reverse('categories'))
 
     return render(request,"auctions/view_category.html",{
-        "listing":listing,
+        "listing":listing.filter(active=True).all(),
         "tag":category
     })

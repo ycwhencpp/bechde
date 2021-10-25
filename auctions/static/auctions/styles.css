@@ -1,22 +1,110 @@
 body {
     padding: 10px;
+    font-family: 'Poppins', sans-serif;
 
 }
-img{
+.card-img{
     width:250px;
     height:350px;
     object-fit: cover;
-    border-radius: 7px;
+    
+    transition: 0.5s ease;
+    transform: scale(0.9);
 }
-
+.card-img:hover{
+    transform: scale(0.85);
+}
+.heading{
+    text-align: center;
+    font-size: 40px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+}
 .flex{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
     flex-wrap: wrap;
+    margin: 0 80px;
 }
 .card{
-    margin-bottom: 20px;
-    border: none;
+    margin-bottom: 70px;
+    box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.1);
+    width: 24em;
+     height:35em;
+      
+     border: none;
+}
+.list-group-item{
+    font-family: 'Poppins', sans-serif;
+  
+}
+.card-title{
+    font-family: 'Poppins', sans-serif;
+}
+form{
+    font-family: 'Poppins', sans-serif;
+    
+}
+label{
+    font-size: 16px;
+    font-weight: 500;
+}
+.img-listing{
+    height:450px;
+    width:600px;
+    object-fit: cover;
+    border-radius:20px;
+}
+/* .submit_bid{
+    position: relative;
+}
+.close_bid{
+    position: absolute;
+    top:20px;
+    left:50px;
+} */
+.bxs-heart,.bx-heart{
+ font-size:35px;
+}
+button{
+   display: inline-block;
+   font-size: 40px;
+}
+.round-button{
+    border-radius: 50%;
+    border:none;
+    box-shadow: 0;
+    background: #fff;
+}
+.bxs-heart{
+    color:#ff0000;
+
+}
+.closed{
+    filter:grayscale(1);
+    position:relative;
+    
+}
+.img-closed::after{
+    content:"";
+    background: url('https://www.freeiconspng.com/thumbs/sold-out-png/sold-out-png-3.png');
+    position:absolute;
+    top:40%;
+    left:13%;
+    height:100%;
+    width:30%;
+    object-fit: contain;
+    background-repeat: no-repeat;
+    background-size: 50%;
+
+}
+.bxs-shopping-bag-alt{
+    font-size:25px;
+    margin-left:10px;
+    /* margin-top:20px; */
+    display: inline-block;
+    /* padding-top:20px; */
+    /* border:2px #fff solid; */
 }

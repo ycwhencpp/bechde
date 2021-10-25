@@ -1,5 +1,7 @@
 {% extends "auctions/layout.html" %}
 
+{% block title %}Categories {% endblock %}
+
 {% block body %}
 {% if messages %}
     {% for message in messages %}
@@ -10,20 +12,22 @@
             </div>
     {% endfor %}
 {% endif %}
-    <h2>categories</h2>
-    <hr>
-    <div class="layout">
-        {% for c in categories %}
-            
-            <div class="categories">
-                <a href="{% url 'view_category' c %}">
-            <h2>{{c}}</h2>
-            <br>
+    <h2 class="heading">categories</h2>
+    <br>
+    <div class="container pb-4">
+        <div class="row justify-content-center text-center">
+            {% for category in categories %}
+                <div class="col-lg-3 col-sm-4 border rounded mx-4 my-2 p-2 py-auto py-lg-4 btn-light">
+                    <a class="category stretched-link text-decoration-none text-dark" href="{% url 'view_category' category %}">{{ category|title }}</a>
+                </div>
             {% empty %}
-            <p>No categories availiable.</p>
+                No categories found.
             {% endfor %}
-        </a>
+        </div>
     </div>
 
-</div>
 {% endblock %}
+
+
+
+

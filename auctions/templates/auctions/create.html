@@ -20,33 +20,40 @@ Create
 
 
 
-<h2>Create your Listing here:</h2>
+<h2 class="heading">Post Your Listing </h2>
+<div class="container">
+  <div class="row justify-content-center align-items-center">
+      <div class="col-10 col-md-8 col-lg-6 pt-3">
+          <form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">
 
-<form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
 
-    {% csrf_token %}
-
-    {% for field in form %}
+              {% for field in form %}
                         
-    
-          {% if field.name != 'starting_bid' %}
-            {{field.label_tag}} {{field}}
           
-          {% else %}
-            {{ field.label_tag }}
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">RS</span>
-              </div>
-              {{ field }}
-            </div>
-        {% endif %}
+                {% if field.name != 'starting_bid' %}
+                    <div class="form-group">
+                    {{field.label_tag}} {{field}}
+                    </div>
+          
+                {% else %}
+                    {{ field.label_tag }}
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">$</span>
+                        </div>
+                        {{ field }}
+                    </div>
+                {% endif %}
     
     
-{% endfor %}
+              {% endfor%}
+              <div class="d-grid gap-2 col-6 mx-auto">
+                  <input type="Submit"  class="btn btn-primary" value="Create">
+              </div>  
 
-    <input type="Submit" value="Create">
-
-</form>
-
+          </form>
+       </div>
+  </div>
+</div>
 {% endblock %}
