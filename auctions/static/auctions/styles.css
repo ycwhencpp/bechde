@@ -100,11 +100,29 @@ button{
     background-size: 50%;
 
 }
+.navbar_logo{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
 .bxs-shopping-bag-alt{
-    font-size:25px;
-    margin-left:10px;
-    /* margin-top:20px; */
-    display: inline-block;
-    /* padding-top:20px; */
-    /* border:2px #fff solid; */
+margin-left: 5px;
+margin-top: 3px;
+font-size:25px;
+color:#000000;
+}
+.nav-link{
+    color:#000000 !important;
+    text-align: center !important;
+    font-weight:500;
+}
+.nav-item,.navbar-nav{
+    margin-left:15px;
+}
+
+.nav-link:hover{
+    color:green !important;
+    
 }
