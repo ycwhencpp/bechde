@@ -19,27 +19,27 @@
     <h2 class="heading">{{listing.Title|title}}</h2>
     <br>
 
-    <div class="container">
-        <div class="d-flex ">
+    <div class="container listing_container">
+        <div class="d-flex listing_flex_container">
             
             {% if listing.active == False %}
                 <div class="flex-shrink-0 img-closed">
                     <img src="{{listing.Url}}" class="img-listing closed" alt="{{listing.Title}}">
                 </div>
             {% else %}
-                <div class="flex-shrink-0 ">
+                <div class="flex-shrink-0 img-listing-div ">
                     <img src="{{listing.Url}}" class="img-listing " alt="{{listing.Title}}">
                 </div>
             {% endif %}
 
-            <div class="flex-grow-1 ms-5">
-                <div class="d-flex justify-content-between">
+            <div class="flex-grow-1 ms-5 listing_description">
+                <div class="d-flex justify-content-between info-div">
                 <div class="info">
-                <h3 class="title">Description:</h3>
-                <p>{{listing.Description}}</p>
+                    <h3 class="title">Description:</h3>
+                    <p class="description">{{listing.Description}}</p>
                 </div>
                 {% if user.is_authenticated %}
-                    <form action="{% url 'update_watchlist' listing.id %}" method="POST">
+                    <form action="{% url 'update_watchlist' listing.id %}" method="POST" class="wishlist_button">
                         {% csrf_token %}
                         {% if is_in_watchlist %}
                         <button class=" round-button"><i class='bx bxs-heart watchlist-icon-fill'></i></button>
@@ -50,14 +50,14 @@
                     </form>
                 {% endif %}
                 </div>
-
+                <div class="details">
                 <h3>Details:</h3>
                 <ul>
                     <li class="mt-3">Category: {{listing.Tag| default:"No Category Listed"|title}}</li>
                     
                     <li class="mt-1">Posted by  <strong>{{listing.author|title}}</strong> on {{listing.date_time.date}} at {{listing.date_time.time}}</li>
                 </ul>
-
+                </div>
                 <hr>
 
                 {% if listing.active == True %}
@@ -87,7 +87,7 @@
                 <div class="row">
                     <div class=" col-md-8 col-sm-10 m-auto">
 
-                        <form action="{% url 'bid' listing.id %}" method="POST">
+                        <form action="{% url 'bid' listing.id %}" method="POST" class="bid_form">
                             {% csrf_token %}
                             <div class="input-group mb-3 d-flex form-group col-12 justify-content-center">
                                 <div class="input-group-prepend">
@@ -116,10 +116,10 @@
 
     <br>
 
-    <h3>Comments <span class="badge bg-secondary" style="font-size: 17px;">{{comment_count}}</span></h3>
+    <h3 class="comment">Comments <span class="badge bg-secondary" style="font-size: 17px;">{{comment_count}}</span></h3>
 
     {% if user.is_authenticated %}
-    <form action="{% url 'comment' listing.id %}" method="POST">
+    <form action="{% url 'comment' listing.id %}" method="POST" class="comment_form">
         {% csrf_token %}
         <div class="form-group mb-10 pd-4">
             {{comment_form}}
@@ -130,7 +130,7 @@
     {% endif %}
     <br>
 
-    <div class="container">
+    <div class="container comment_container">
         {% for c in comments %}
             <div class="row border bg-light py-2 mx-0 mx-md-3 mb-3">
                 <div class="col-6">

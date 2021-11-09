@@ -24,12 +24,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '6ps8j!crjgrxt34cqbqn7x&b3y%(fny8k8nh21+qa)%ws3fh!q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'https://nilaamkar.herokuapp.com/',
     'localhost',
     '127.0.0.1',
+    '127.0.0.1:8000',
     
 
 ]
@@ -137,3 +138,5 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 django_heroku.settings(locals())
+
+

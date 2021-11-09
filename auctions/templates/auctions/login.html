@@ -5,13 +5,13 @@
 {% block body %}
 
 {% if messages %}
-    {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
-                <p class="text-center">
-                <strong>{{ message }}</strong>
-                </p>
-            </div>
-    {% endfor %}
+{% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} center-block" role="alert">
+            <p class="text-center">
+            <strong>{{ message }}</strong>
+            </p>
+        </div>
+{% endfor %}
 {% endif %}
 
     <h2 class="heading">Login</h2>
