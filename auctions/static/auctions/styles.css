@@ -162,6 +162,10 @@ text-overflow: ellipsis;
     overflow: hidden; 
     text-overflow: ellipsis;
     white-space:nowrap;
+    
+}
+.watchlist-title{
+    width:16ch;
 }
 .navbar h4 a{
 text-decoration: none ;

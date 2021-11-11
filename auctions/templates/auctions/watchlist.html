@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h3 class="card-title">{{listing.Title|title}}</h3>
+                            <h3 class="card-title watchlist-title">{{listing.Title|title}}</h3>
                             <p class="card-text">Amount: <strong>${{listing.starting_bid}} </strong></p>
                         </div>
                     <form action="{% url 'remove_watchlist' listing.id %}" method="POST" >
